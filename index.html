@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CatNetPeru</title>
+  <style>
+    :root{
+      --accent:#0c6cf2;
+      --muted:#6b7280;
+      --bg:#f4f6f8;
+      --container-max:1200px;
+      --radius:16px;
+      --carousel-padding:12px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:#222;
+    }
+
+    .header{
+      width:100%;
+      position:sticky;
+      top:0;
+      z-index:1200;
+      background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(251,253,255,0.95));
+      box-shadow:0 4px 12px rgba(2,6,23,0.04);
+      backdrop-filter: blur(6px);
+    }
+    .topbar{
+      max-width:var(--container-max);
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:4px 12px;
+    }
+    .brand{ display:flex; align-items:center; gap:12px; }
+    .brand img{ width:96px; height:96px; object-fit:contain; border-radius:8px; }
+    .brand .title{ font-weight:700; font-size:1.05rem; }
+
+    .contact-list{ display:flex; gap:18px; align-items:center; font-size:0.95rem; color:var(--muted); }
+    .contact-list a{ color:inherit; text-decoration:none }
+    .socials{ display:flex; gap:8px; align-items:center }
+    .socials a{ display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:6px; text-decoration:none; background:transparent; border:1px solid rgba(15,23,42,0.05); }
+
+    .container{ max-width:var(--container-max); margin:20px auto; padding:0 16px; }
+
+    .carousel-full{
+      width:100vw;
+      margin-left:calc(50% - 50vw);
+      padding:24px var(--carousel-padding);
+      background:transparent;
+      box-sizing:content-box;
+    }
+
+    .carousel-inner{
+      position:relative;
+      height:60vh;
+      min-height:320px;
+      max-height:900px;
+      margin:0 auto;
+      width: min(var(--container-max), calc(100% - (var(--carousel-padding) * 2)));
+      border-top-left-radius:var(--radius);
+      border-top-right-radius:var(--radius);
+      border-bottom-left-radius:0;
+      border-bottom-right-radius:0;
+      overflow:hidden;
+      box-shadow:0 22px 48px rgba(2,6,23,0.18);
+      background:#000;
+    }
+
+    .carousel-inner a{ display:block; width:100%; height:100%; position:relative; text-decoration:none; }
+    .carousel-inner img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transform:scale(1.05); transition:opacity 900ms ease, transform 6000ms ease; }
+    .carousel-inner img.active{ opacity:1; transform:scale(1.0); z-index:1; }
+
+    .controls{ position:absolute; top:50%; left:0; right:0; display:flex; justify-content:space-between; transform:translateY(-50%); z-index:6; padding:0 12px; pointer-events:none; }
+    .controls button{ pointer-events:auto; width:48px; height:48px; border-radius:50%; border:none; background:rgba(0,0,0,0.45); color:#fff; font-size:20px; cursor:pointer; display:inline-grid; place-items:center; box-shadow:0 10px 26px rgba(2,6,23,0.24); transition:transform .12s ease, background .12s ease; }
+    .controls button:hover{ transform:translateY(-4px); background:rgba(0,0,0,0.6); }
+    .controls button:focus{ outline:3px solid rgba(12,108,242,0.18); }
+
+    .caption-area{
+      max-width: min(var(--container-max), calc(100% - (var(--carousel-padding) * 2)) );
+      margin:0 auto;
+      padding:0;
+      display:flex;
+      justify-content:center;
+    }
+
+    .legend-block{
+      width:100%;
+      border-radius:0 0 var(--radius) var(--radius);
+      overflow:hidden;
+      box-shadow:0 10px 28px rgba(2,6,23,0.08);
+      display:flex;
+      flex-direction:column;
+      margin-top:0;
+    }
+
+    .legend-block .caption{
+      background:rgba(0,0,0,0.95);
+      color:#fff;
+      padding:12px 16px;
+      font-weight:700;
+      font-size:1.15rem;
+      width:100%;
+    }
+    .legend-block .description{
+      background:#fff;
+      color:#111;
+      padding:12px 16px;
+      width:100%;
+      font-size:0.98rem;
+      line-height:1.45;
+    }
+
+    .whatsapp-float{ position:fixed; right:18px; bottom:18px; width:64px; height:64px; border-radius:50%; background:linear-gradient(180deg,#25D366,#128C7E); display:inline-flex; align-items:center; justify-content:center; box-shadow:0 12px 34px rgba(18,140,126,0.26); z-index:9999; text-decoration:none; color:#fff; border:4px solid rgba(255,255,255,0.35); }
+
+    .contact-card{ max-width:var(--container-max); margin:20px auto; padding:20px; background:#fff; border-radius:10px; box-shadow:0 6px 18px rgba(2,6,23,0.06); }
+
+    @media(max-width:1000px){ .carousel-inner{ height:50vh; } .controls button{ width:44px; height:44px } }
+    @media(max-width:720px){ .carousel-inner{ height:42vh; } .brand img{ width:56px; height:56px } .legend-block .caption{ font-size:1rem } .legend-block .description{ font-size:0.95rem } .controls button{ width:40px; height:40px } .whatsapp-float{ width:56px; height:56px } }
+    @media(max-width:480px){ .carousel-full{ padding:18px var(--carousel-padding) } .carousel-inner{ height:36vh; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="topbar">
+      <div class="brand">
+        <img src="images/logo.jpeg" alt="Logo" />
+        <div>
+          <div class="title">CatNet Perú</div>
+          <div style="font-size:0.85rem;color:var(--muted)">Viajes & Servicios</div>
+        </div>
+      </div>
+      <div class="contact-list">
+        <div><strong>Email:</strong> <a href="mailto:catnetperu@hotmail.com">catnetperu@hotmail.com</a></div>
+        <div><strong>Tel:</strong> <a href="tel:+51955434585">+51 955 434 585</a></div>
+        <div class="socials">
+          <a href="#" title="Facebook" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 12C22 6.477 17.523 2 12 2S2 6.477 2 12c0 5 3.657 9.128 8.438 9.878v-6.99H7.898v-2.888h2.54V9.845c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.462h-1.26c-1.242 0-1.63.771-1.63 1.562v1.875h2.773l-.443 2.888h-2.33v6.99C18.343 21.128 22 17 22 12z" fill="#1877F2"/></svg></a>
+          <a href="#" title="Instagram" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 6.2A3.2 3.2 0 1 0 15.2 11 3.2 3.2 0 0 0 12 8.2zM18.4 6.1a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2z" fill="#C13584"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="carousel-full">
+    <div class="carousel-inner">
+      <a id="link" href="#">
+        <img id="img1" src="" alt="" />
+        <img id="img2" src="" alt="" />
+      </a>
+      <div class="controls">
+        <button id="prev">&#8592;</button>
+        <button id="next">&#8594;</button>
+      </div>
+    </div>
+    <div class="caption-area">
+      <div class="legend-block">
+        <div class="caption" id="caption">&nbsp;</div>
+        <div class="description" id="description">&nbsp;</div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+    <section class="contact-card">
+      <h2>Solicitar Información</h2>
+      <p><strong>Dirección:</strong> Jr. Bolivar 260 oficina 101, San Miguel</p>
+      <p><strong>Teléfono:</strong> +51-955434585</p>
+      <p><strong>Email:</strong> <a href="mailto:catnetperu@hotmail.com">catnetperu@hotmail.com</a></p>
+    </section>
+  </main>
+
+  <a class="whatsapp-float" href="https://wa.me/51955434585">WA</a>
+
+  <script>
+  const places = [
+    // DESTINOS NACIONALES
+    { name: "Machu Picchu (Cusco)", image: "imagesNac/Machu_Picchu.jpg", url: "imagesNac/Machu_Picchu.jpg", description: "Ciudadela inca icónica situada en lo alto de los Andes; mezcla de arquitectura, historia y paisajes espectaculares. Ideal para caminatas y fotografía." },
+    { name: "Sacsayhuamán (Cusco)", image: "imagesNac/Sacsayhuaman.jfif", url: "imagesNac/Sacsayhuaman.jfif", description: "Fortaleza ceremonial inca con enormes bloques de piedra encajados con precisión; ofrece vistas panorámicas de Cusco." },
+    { name: "Plaza de Armas del Cuzco", image: "imagesNac/Plaza_Armas_Cuzco.jpg", url: "imagesNac/Plaza_Armas_Cuzco.jpg", description: "Corazón histórico de Cusco: plazas, catedrales y vida local; punto de partida para explorar la ciudad y sus alrededores." },
+    { name: "Plaza de Armas de Arequipa", image: "imagesNac/plaza-de-armas_Arequipa.jpg", url: "imagesNac/plaza-de-armas_Arequipa.jpg", description: "Plaza central rodeada por arquitectura colonial y el imponente volcán Misti como telón de fondo; muy fotogénica." },
+    { name: "Calles de Arequipa", image: "imagesNac/Calles_de_Arequipa.jpg", url: "imagesNac/Calles_de_Arequipa.jpg", description: "Pintorescas calles de sillar blanco, patios y fachadas coloniales que muestran la identidad arequipeña." },
+    { name: "Plaza de Armas de Puno", image: "imagesNac/Plaza_de_Armas_de_Puno_en_el_Bicentenario_Peruano.jpg", url: "imagesNac/Plaza_de_Armas_de_Puno_en_el_Bicentenario_Peruano.jpg", description: "Centro de la ciudad lacustre de Puno, punto de encuentro cultural y acceso al Lago Titicaca." },
+    { name: "Monumento a Sucre (Ayacucho)", image: "imagesNac/Monumento_a_Sucre_en_la_plaza_de_Armas_de_Ayacucho.jpg", url: "imagesNac/Monumento_a_Sucre_en_la_plaza_de_Armas_de_Ayacucho.jpg", description: "Hito histórico en la plaza principal de Ayacucho, rodeado de arquitectura colonial y tradiciones locales." },
+    { name: "Plaza de Armas de Piura", image: "imagesNac/Piura_Plaza_de_Armas.jpg", url: "imagesNac/Piura_Plaza_de_Armas.jpg", description: "Espacio central de Piura con árboles y edificios emblemáticos; puerta de entrada a playas del norte peruano." },
+    { name: "Chiclayo", image: "imagesNac/Chiclayo_-_panoramio.jpg", url: "imagesNac/Chiclayo_-_panoramio.jpg", description: "Ciudad norteña famosa por su gastronomía y sitios arqueológicos como Túcume y el Señor de Sipán." },
+    { name: "Plaza de Armas de Iquitos", image: "imagesNac/Plaza_de_armas_iquitos.jpg", url: "imagesNac/Plaza_de_armas_iquitos.jpg", description: "Plaza urbana en la selva amazónica; punto de partida para excursiones por el río Amazonas." },
+    { name: "Tarapoto", image: "imagesNac/Tarapoto.jpg", url: "imagesNac/Tarapoto.jpg", description: "Entrada a bosques tropicales y cataratas; destino ideal para ecoturismo y aventura." },
+    { name: "La Merced (Chanchamayo)", image: "imagesNac/Plaza_de_la_Avioneta_-_La_Merced_-_panoramio.jpg", url: "imagesNac/Plaza_de_la_Avioneta_-_La_Merced_-_panoramio.jpg", description: "Ciudad en la ceja de selva con clima templado, conocida por sus paisajes y vida rural." },
+    { name: "Huancayo", image: "imagesNac/HUANCAYO_VISITAS.jpg", url: "imagesNac/HUANCAYO_VISITAS.jpg", description: "Centro urbano en la sierra central; mezcla de mercados tradicionales y modernidad." },
+
+    // DESTINOS INTERNACIONALES – AMÉRICA
+    { name: "Plaza de Mayo (Buenos Aires)", image: "imagesInt/Buenos_Aires_-_Plaza_de_Mayo.jpg", url: "imagesInt/Buenos_Aires_-_Plaza_de_Mayo.jpg", description: "Histórica plaza porteña rodeada por edificios emblemáticos y centros de poder político." },
+    { name: "Obelisco de Buenos Aires", image: "imagesInt/Panorama_Obelisco_de_Buenos_Aires.jpg", url: "imagesInt/Panorama_Obelisco_de_Buenos_Aires.jpg", description: "Monumento icónico en la Avenida 9 de Julio, símbolo urbano y punto de encuentro." },
+    { name: "Plaza de Armas (Santiago)", image: "imagesInt/Santiago_de_Chile,_Plaza_de_Armas.jpg", url: "imagesInt/Santiago_de_Chile,_Plaza_de_Armas.jpg", description: "Núcleo histórico de Santiago con catedral y vida urbana intensa; excelente para paseos a pie." },
+    { name: "Mitad del Mundo (Quito)", image: "imagesInt/Mitad_del_Mundo_Quito_Ecuador.jfif", url: "imagesInt/Mitad_del_Mundo_Quito_Ecuador.jfif", description: "Monumento que marca la latitud 0°; atracción turística con exhibiciones culturales y científicas." },
+    { name: "Altos de Chavón (R.D.)", image: "imagesInt/Altos_de_Chavon.jpg", url: "imagesInt/Altos_de_Chavon.jpg", description: "Pueblo cultural recreado al estilo mediterráneo con vistas al río Chavón y galerías de arte." },
+    { name: "Ciudad de Panamá", image: "imagesInt/Ciudad_de_Panama_-_Panama.jpg", url: "imagesInt/Ciudad_de_Panama_-_Panama.jpg", description: "Metrópolis moderna conocida por su canal, rascacielos y mezcla de historia y negocios." },
+    { name: "Virgen de Guadalupe (México)", image: "imagesInt/Templo_de_la_Virgen_de_Guadalupe.jpg", url: "imagesInt/Templo_de_la_Virgen_de_Guadalupe.jpg", description: "Lugar de gran devoción católica y peregrinación, con significación cultural e histórica." },
+    { name: "Miami Skyline", image: "imagesInt/Downtown_Miami_Skyline.jpg", url: "imagesInt/Downtown_Miami_Skyline.jpg", description: "Perfil urbano costero con hoteles y playas; destino popular por su vida nocturna y clima." },
+    { name: "Cinderella Castle (Orlando)", image: "imagesInt/Cinderella_Castle_at_Magic_Kingdom.jpg", url: "imagesInt/Cinderella_Castle_at_Magic_Kingdom.jpg", description: "Símbolo del parque temático Magic Kingdom; icono familiar y punto de fotografía obligado." },
+    { name: "Lago Louise (Canadá)", image: "imagesInt/Lake_Louise-Banff_National_Park.jpg", url: "imagesInt/Lake_Louise-Banff_National_Park.jpg", description: "Lago turquesa rodeado de montañas y glaciares; paisaje alpino impresionante para senderismo." },
+    { name: "Toronto Skyline", image: "imagesInt/Toronto_Skyline.jpg", url: "imagesInt/Toronto_Skyline.jpg", description: "Horizonte con la CN Tower y rascacielos; centro financiero y cultural de Canadá." },
+
+    // EUROPA
+    { name: "Catedral de la Almudena (Madrid)", image: "imagesEur/Catedral_de_la_Almudena_Madrid,_España.jfif", url: "imagesEur/Catedral_de_la_Almudena_Madrid,_España.jfif", description: "Catedral moderna con vistas al Palacio Real; mezcla de estilos arquitectónicos." },
+    { name: "Marbella (España)", image: "imagesEur/Marbella_Old_Town.jpg", url: "imagesEur/Marbella_Old_Town.jpg", description: "Costa mediterránea con playas, paseo marítimo y casco antiguo pintoresco." },
+    { name: "Plaza de San Pedro (Vaticano)", image: "imagesEur/St_Peters_Square_Vatican.jpg", url: "imagesEur/St_Peters_Square_Vatican.jpg", description: "Amplia plaza barroca diseñada por Bernini, centro de ceremonias papales y peregrinación." },
+    { name: "Coliseo (Roma)", image: "imagesEur/Colosseum_Roma.jpg", url: "imagesEur/Colosseum_Roma.jpg", description: "Anfiteatro romano emblemático, testigo de la historia antigua y la ingeniería romana." },
+    { name: "Venecia", image: "imagesEur/Venecia_Italia.jpg", url: "imagesEur/Venecia_Italia.jpg", description: "Ciudad de canales, góndolas y arquitectura renacentista; un destino romántico y único." },
+    { name: "Asís", image: "imagesEur/Assisi_-_Basilica_di_San_Francesco.jpg", url: "imagesEur/Assisi_-_Basilica_di_San_Francesco.jpg", description: "Pueblo medieval conocido por la basílica de San Francisco y su atmósfera espiritual." },
+    { name: "Papa León XIV", image: "imagesEur/Pope_Leo_XIV_on_the_loggia.jpg", url: "imagesEur/Pope_Leo_XIV_on_the_loggia.jpg", description: "Imagen histórica alusiva a un pontífice; útil en contextos culturales o religiosos." },
+    { name: "Santuario de Lourdes", image: "imagesEur/Basilique_de_Immaculee_Conception_de_Notre-Dame.jpg", url: "imagesEur/Basilique_de_Immaculee_Conception_de_Notre-Dame.jpg", description: "Centro de peregrinación mariana con santuarios y procesiones; fuerte tradición religiosa." },
+    { name: "Virgen de Fátima (Lisboa)", image: "imagesEur/Our_Lady_of_Fatima.jpg", url: "imagesEur/Our_Lady_of_Fatima.jpg", description: "Santuario portugués de gran devoción con historia de apariciones y peregrinajes." },
+    { name: "Marienplatz (Múnich)", image: "imagesEur/Marienplatz_and_City_Hall.jfif", url: "imagesEur/Marienplatz_and_City_Hall.jfif", description: "Plaza central de Múnich con el famoso carillón y vida urbana vibrante." },
+    { name: "Puerta de Brandeburgo", image: "imagesEur/Brandenburger_Tor_abends.jpg", url: "imagesEur/Brandenburger_Tor_abends.jpg", description: "Símbolo histórico de Berlín, testigo de cambios políticos y encuentros culturales." },
+    { name: "Stonehenge (Inglaterra)", image: "imagesEur/Stonehenge.jpg", url: "imagesEur/Stonehenge.jpg", description: "Monumento megalítico antiguo; misterio arqueológico y atractivo turístico mundial." },
+    { name: "Buckingham Palace", image: "imagesEur/Buckingham_Palace_London.jpg", url: "imagesEur/Buckingham_Palace_London.jpg", description: "Residencia oficial de la monarquía británica en Londres; ceremonias y guardias reales." },
+
+    // ASIA
+    { name: "Gran Muralla China", image: "imagesAsia/Muralla_China.jpg", url: "imagesAsia/Muralla_China.jpg", description: "Extensa estructura defensiva que atraviesa paisajes montañosos; símbolo histórico de China." },
+    { name: "Old Summer Palace Gates", image: "imagesAsia/Old_Summer_Palace_Palace_Gates_of_Qichunyuan.jpg", url: "imagesAsia/Old_Summer_Palace_Palace_Gates_of_Qichunyuan.jpg", description: "Ruinas y jardines imperiales con historia cultural profunda en Pekín." },
+    { name: "Ejército de Terracota", image: "imagesAsia/Terracotta_Army.jpg", url: "imagesAsia/Terracotta_Army.jpg", description: "Miles de figuras funerarias que custodian la tumba del primer emperador chino; impresionante hallazgo arqueológico." },
+    { name: "Monte Fuji", image: "imagesAsia/Fuji_Speedway_with_Mount_Fuji.jpg", url: "imagesAsia/Fuji_Speedway_with_Mount_Fuji.jpg", description: "Cumbre icónica de Japón, símbolo natural y espiritual; popular entre fotógrafos y senderistas." },
+    { name: "Kinkaku-ji (Kioto)", image: "imagesAsia/Kinkakuji_Golden_Pavilion_Kyoto,_Japan.jpg", url: "imagesAsia/Kinkakuji_Golden_Pavilion_Kyoto,_Japan.jpg", description: "Pabellón dorado reflejado en un estanque; uno de los sitios más fotografiados de Kioto." },
+    { name: "Fushimi Inari Taisha", image: "imagesAsia/Fushimi_Inari_Taisha.jpg", url: "imagesAsia/Fushimi_Inari_Taisha.jpg", description: "Famoso santuario de miles de torii rojas que forman senderos; lugar emblemático de Kioto." },
+    { name: "Mezquita Azul (Estambul)", image: "imagesAsia/Blue_Mosque.jpg", url: "imagesAsia/Blue_Mosque.jpg", description: "Mezquita histórica con cúpulas y azulejos azules; punto clave del perfil arquitectónico de Estambul." },
+    { name: "Globos en Capadocia", image: "imagesAsia/Cappadocia.jpg", url: "imagesAsia/Cappadocia.jpg", description: "Paisaje lunar con chimeneas de hadas y paseos en globo al amanecer; experiencia única." },
+    { name: "Santa Sofía", image: "imagesAsia/Istanbul_Hagia_Sophia.jpg", url: "imagesAsia/Istanbul_Hagia_Sophia.jpg", description: "Monumento monumental que ha sido iglesia, mezquita y museo; cruce de culturas e historia." },
+
+    // ÁFRICA
+    { name: "Gran Pirámide de Guiza", image: "imagesAfrica/Kheops-Pyramid.jpg", url: "imagesAfrica/Kheops-Pyramid.jpg", description: "Una de las arquitecturas más antiguas y majestuosas del mundo; patrimonio de la humanidad." },
+    { name: "Templo de Luxor", image: "imagesAfrica/Luxor_Temple_Luxor_Egypt.jpg", url: "imagesAfrica/Luxor_Temple_Luxor_Egypt.jpg", description: "Conjunto de templos faraónicos que muestran la grandeza del Antiguo Egipto." },
+    { name: "Valle de los Reyes", image: "imagesAfrica/Valley_of_the_Kings.jpg", url: "imagesAfrica/Valley_of_the_Kings.jpg", description: "Necrópolis donde yacen faraones; rico en tumbas ornamentadas y descubrimientos arqueológicos." },
+    { name: "Gran Esfinge de Guiza", image: "imagesAfrica/Great_Sphinx_of_Giza.jpg", url: "imagesAfrica/Great_Sphinx_of_Giza.jpg", description: "Escultura monumental con cuerpo de león y rostro humano; símbolo del antiguo Egipto." },
+
+    // OCEANÍA
+    { name: "Ópera de Sídney", image: "imagesOceania/Sydney_Opera_House.jpg", url: "imagesOceania/Sydney_Opera_House.jpg", description: "Edificio icónico con velas arquitectónicas en la bahía; centro cultural y fotográfico." },
+    { name: "Doce Apóstoles", image: "imagesOceania/The_Twelve_Apostles.jpg", url: "imagesOceania/The_Twelve_Apostles.jpg", description: "Formaciones rocosas sobre el océano en la Great Ocean Road; paisaje costero impresionante." }
+  ];
+    let current=0, showingImg1=true;
+    const img1=document.getElementById('img1');
+    const img2=document.getElementById('img2');
+    const caption=document.getElementById('caption');
+    const description=document.getElementById('description');
+    const link=document.getElementById('link');
+    const prev=document.getElementById('prev');
+    const next=document.getElementById('next');
+    function showSlide(i){
+      const place=places[i];
+      const imgToShow=showingImg1?img1:img2;
+      const imgToHide=showingImg1?img2:img1;
+      imgToShow.onload=()=>{imgToShow.classList.add('active'); imgToHide.classList.remove('active');};
+      caption.textContent=place.name;
+      description.textContent=place.description;
+      link.href=place.url;
+      imgToShow.src=place.image;
+      imgToShow.alt=place.name;
+      showingImg1=!showingImg1;
+    }
+    function nextSlide(){current=(current+1)%places.length; showSlide(current);}
+    function prevSlide(){current=(current-1+places.length)%places.length; showSlide(current);}
+    
+    // Auto-rotación con pausa en hover/focus
+    let timer = setInterval(nextSlide, 5000);
+    function resetTimer(){ clearInterval(timer); timer = setInterval(nextSlide, 5000); }
+    
+    next.addEventListener('click', ()=>{ nextSlide(); resetTimer(); });
+    prev.addEventListener('click', ()=>{ prevSlide(); resetTimer(); });
+    document.querySelector('.carousel-inner').addEventListener('mouseenter', ()=>clearInterval(timer));
+    document.querySelector('.carousel-inner').addEventListener('mouseleave', ()=>timer = setInterval(nextSlide, 5000));
+    document.querySelector('.carousel-inner').addEventListener('focusin', ()=>clearInterval(timer));
+    document.querySelector('.carousel-inner').addEventListener('focusout', ()=>timer = setInterval(nextSlide, 5000));
+    showSlide(current);
+  </script>
+</body>
+</html>
